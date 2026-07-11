@@ -45,7 +45,8 @@ const tripSchema=new mongoose.Schema({
     },
 
     intrests:{
-        type:array
+        type:array,
+        
 
     },
 
