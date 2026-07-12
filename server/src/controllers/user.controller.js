@@ -102,5 +102,34 @@ export const login=async(req,res)=>{
             console.log("login failed",error);
             return res.status(500).send("login failed");
         }
+
+
+export const profile=async(req,res)=>{
+        try{
+            const user=req.user;
+            return res.status(200).json({
+                id:user._id,
+                username:user.username,
+                email:user.email
+            });
+
+        }
+        catch(error)
+        {
+            return res.status(500).json({"message":"couldnt fetch profile"});   
+        }         
+    }
+}
+
+
+export const logout=async(req,res)=>{
+    try{
     
+        return res.status(200).json({"message":"logout successful"});
+    }
+    catch(error)
+    {
+        return res.status(500).json({"message":"couldnt logout"});   
+    }
+
 }

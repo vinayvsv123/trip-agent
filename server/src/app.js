@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import userRoutes from "./routes/user.routes.js";
+import tripRoutes from"./routes/trip.routes.js";
 
 const app=express();
 app.use(express.json());
@@ -13,5 +14,6 @@ app.get('/',(req,res)=>{
 });
 
 app.use("/api/users", userRoutes);
+app.use("/api/trips",tripRoutes);
 
 export default app;
