@@ -1,4 +1,4 @@
-import User from "../models/user.model.js";
+import User from "../models/user.models.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
@@ -102,6 +102,7 @@ export const login=async(req,res)=>{
             console.log("login failed",error);
             return res.status(500).send("login failed");
         }
+    }
 
 
 export const profile=async(req,res)=>{
@@ -119,7 +120,7 @@ export const profile=async(req,res)=>{
             return res.status(500).json({"message":"couldnt fetch profile"});   
         }         
     }
-}
+
 
 
 export const logout=async(req,res)=>{

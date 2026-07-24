@@ -17,7 +17,7 @@ export const createTrip=async(req,res)=>{
             startDate,
             endDate,
             totalDays,
-            budgest,
+            budget,
             travellers,
             interests
             
@@ -48,7 +48,7 @@ export const getTrips=async(req,res)=>{
 }
 
 //get trip by id
-export const gettripById=async(req,res)=>{
+export const getTripById=async(req,res)=>{
     try{
         const id=req.params.id;
         const trip=await Trip.findById(id);
