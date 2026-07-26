@@ -51,8 +51,11 @@ const tripSchema=new mongoose.Schema({
     interests:{
         type:[String],
         required:true,
-        
+    },
 
+    itinerary:{
+        type:Object,
+        default:null,
     },
 
 },{

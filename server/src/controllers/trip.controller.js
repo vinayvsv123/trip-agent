@@ -1,13 +1,14 @@
 import Trip from "../models/trip.models.js";
+import itineraryAgent from "../services/ai/itinerary.agent.js";
 
 
 //create trip
 export const createTrip=async(req,res)=>{
     try{
-        const { source,destination,startDate,endDate,totalDays,budgest,travellers,interests }=req.body;
+        const { source,destination,startDate,endDate,totalDays,budget,travellers,interests }=req.body;
         
         
-       if(!source || !destination || !startDate || !endDate || !totalDays || !budgest || !travellers || !interests){
+       if(!source || !destination || !startDate || !endDate || !totalDays || !budget || !travellers || !interests){
             return res.status(400).json({"message":"All fields are required"});
         }
         const newTrip=await Trip.create({
@@ -85,3 +86,45 @@ export const deleteTrip=async(req,res)=>{
         return res.status(500).json({"message":"failed to delete trip"});
     }
 }
+
+//generateItinerary
+export const generateItinerary=async(req,res)=>{
+    try{
+        const id=req.params.id;
+        const trip=await Trip.findById(id);
+        if(!trip){
+            return res.status(404).json({"message":"trip not found"});
+        }
+        if(trip.user.toString()!==req.user._id.toString()){
+            return res.status(403).json({"message":"unauthorized to generate itinerary for this trip"});
+        }
+        
+        console.log(`Generating itinerary for trip ${id} using LangGraph...`);
+        const result=await itineraryAgent.invoke({
+            tripDetails: {
+                source: trip.source,
+                destination: trip.destination,
+                startDate: trip.startDate,
+                endDate: trip.endDate,
+                totalDays: trip.totalDays,
+                budget: trip.budget,
+                travellers: trip.travellers,
+                interests: trip.interests
+            }
+        });
+        
+        if(!result || !result.itinerary){
+            return res.status(500).json({"message":"itinerary generation returned empty result"});
+        }
+        
+        trip.itinerary=result.itinerary;
+        await trip.save();
+        
+        return res.status(200).json({"message":"itinerary generated successfully",trip});
+    }
+    catch(error){
+        console.log("couldnt generate itinerary",error);
+        return res.status(500).json({"message":"failed to generate itinerary","error":error.message});
+    }
+}
+
